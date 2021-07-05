@@ -1,7 +1,11 @@
 name: Decision Fleet Shard
 on: [pull_request]
 jobs:
-  runtime-build:
+  decision-fleetshard-build:
+    env:
+      MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+      MAVEN_CLI_OPTS: "-s $GITHUB_WORKSPACE/.ci/settings.xml --batch-mode"
+      OUTPUT_CONTAINER_NAME: "quay.io/kiegroup/baaas-decision-fleet-shard:$GITHUB_SHA"
     concurrency:
       group: baaas-dfs-pr-${{ github.head_ref }}
       cancel-in-progress: true
@@ -49,6 +53,15 @@ jobs:
           fail_on_test_failures: true
           fail_if_no_tests: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Verify Native Compile
+#      - name: Verify Native Compile
+#        shell: bash
+#        run: mvn package -Pnative -Dmaven.test.skip=true
+      - name: Build JVM Docker Container
         shell: bash
-        run: mvn package -Pnative -Dmaven.test.skip=true
+        env:
+          CONTAINER_REGISTRY_PASSWORD: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+          CONTAINER_REGISTRY_USER: ${{ secrets.CONTAINER_REGISTRY_USER }}
+        run: |
+          echo "$CONTAINER_REGISTRY_PASSWORD" | docker login quay.io --username $CONTAINER_REGISTRY_USER --password-stdin
+          docker build -f decision-fleet-shard-operator/src/main/docker/Dockerfile.jvm -t $OUTPUT_CONTAINER_NAME-jvm decision-fleet-shard-operator/
+
