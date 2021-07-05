@@ -65,5 +65,5 @@ jobs:
           echo "$CONTAINER_REGISTRY_PASSWORD" | docker login quay.io --username $CONTAINER_REGISTRY_USER --password-stdin
           docker build -f decision-fleet-shard-operator/src/main/docker/Dockerfile.jvm -t $OUTPUT_CONTAINER_NAME-jvm decision-fleet-shard-operator/
           docker push $OUTPUT_CONTAINER_NAME-jvm
-          docker rm -f $OUTPUT_CONTAINER_NAME-jvm
+          docker image rm -f $OUTPUT_CONTAINER_NAME-jvm
 
