@@ -1,0 +1,33 @@
+name: Decision Fleet Shard Pull Request
+on: [pull_request]
+jobs:
+  runtime-build:
+    concurrency:
+      group: baaas-dfs-pr-${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    name: Build and Test
+    steps:
+      - name: Free disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+      - name: Set up GraalVM
+        uses: DeLaGuardo/setup-graalvm@4.0
+        with:
+          graalvm: '21.1.0'
+          java: 'java11'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile and Validate Formating
+        shell: bash
+        run: mvn package -Dmaven.test.skip=true -Pvalidate-formatting
+      - name: Run Test Suite (Openshift Compatibility)
+        shell: bash
+        run: mvn test -Dbaaas.k8s.platform=openshift
+      - name: Run Test Suite (Kuberntes Compatibility)
+        shell: bash
+        run: mvn test -Dbaaas.k8s.platform=k8s
