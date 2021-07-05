@@ -53,17 +53,6 @@ jobs:
           fail_on_test_failures: true
           fail_if_no_tests: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Verify Native Compile
-#        shell: bash
-#        run: mvn package -Pnative -Dmaven.test.skip=true
-      - name: Build JVM Docker Container
+      - name: Verify Native Compile
         shell: bash
-        env:
-          CONTAINER_REGISTRY_PASSWORD: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
-          CONTAINER_REGISTRY_USER: ${{ secrets.CONTAINER_REGISTRY_USER }}
-        run: |
-          echo "$CONTAINER_REGISTRY_PASSWORD" | docker login quay.io --username $CONTAINER_REGISTRY_USER --password-stdin
-          docker build -f decision-fleet-shard-operator/src/main/docker/Dockerfile.jvm -t $OUTPUT_CONTAINER_NAME-jvm decision-fleet-shard-operator/
-          docker push $OUTPUT_CONTAINER_NAME-jvm
-          docker image rm -f $OUTPUT_CONTAINER_NAME-jvm
-
+        run: mvn package -Pnative -Dmaven.test.skip=true
