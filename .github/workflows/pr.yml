@@ -34,6 +34,7 @@ jobs:
           check_name: Test Results (Openshift Compatibility)
           fail_on_test_failures: true
           fail_if_no_tests: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Test Suite (Kubernetes Compatibility)
         shell: bash
         run: mvn test -Dbaaas.k8s.platform=k8s
@@ -44,3 +45,4 @@ jobs:
           check_name: Test Results (Kubernetes Compatibility)
           fail_on_test_failures: true
           fail_if_no_tests: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
