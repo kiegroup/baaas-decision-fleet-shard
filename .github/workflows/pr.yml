@@ -9,12 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Test
     steps:
-      - name: Free disk space
-        shell: bash
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
       - name: Set up GraalVM
         uses: DeLaGuardo/setup-graalvm@4.0
         with:
@@ -28,6 +22,20 @@ jobs:
       - name: Run Test Suite (Openshift Compatibility)
         shell: bash
         run: mvn test -Dbaaas.k8s.platform=openshift
-      - name: Run Test Suite (Kuberntes Compatibility)
+      - name: Publish Test Report (Openshift Compatibility)
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1.0.5
+        with:
+          check_name: Test Results (Openshift Compatibility)
+          fail_on_test_failures: true
+          fail_if_no_tests: false
+      - name: Run Test Suite (Kubernetes Compatibility)
         shell: bash
         run: mvn test -Dbaaas.k8s.platform=k8s
+      - name: Publish Test Report (Kubernetes Compatibility)
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1.0.5
+        with:
+          check_name: Test Results (Kubernetes Compatibility)
+          fail_on_test_failures: true
+          fail_if_no_tests: false
