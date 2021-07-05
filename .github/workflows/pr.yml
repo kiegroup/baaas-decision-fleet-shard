@@ -1,4 +1,4 @@
-name: Decision Fleet Shard Pull Request
+name: Decision Fleet Shard
 on: [pull_request]
 jobs:
   runtime-build:
@@ -46,3 +46,6 @@ jobs:
           fail_on_test_failures: true
           fail_if_no_tests: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify Native Compile
+        shell: bash
+        run: mvn package -Pnative -Dmaven.test.skip=true
