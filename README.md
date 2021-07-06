@@ -5,6 +5,7 @@
 * Apache Maven
 * Java version: GraalVM 11
 * Podman/Docker for container builds
+* Testing
 
 ## Build
 
