@@ -35,8 +35,9 @@ jobs:
         run: mvn test -Dbaaas.k8s.platform=openshift
       - name: Publish Test Report (Openshift Compatibility)
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@v1.0.5
+        uses: scacap/action-surefire-report@v1.0.10
         with:
+          skip_publishing: true
           check_name: Test Results (Openshift Compatibility)
           fail_on_test_failures: true
           fail_if_no_tests: false
@@ -46,8 +47,9 @@ jobs:
         run: mvn test -Dbaaas.k8s.platform=k8s
       - name: Publish Test Report (Kubernetes Compatibility)
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@v1.0.5
+        uses: scacap/action-surefire-report@v1.0.10
         with:
+          skip_publishing: true
           check_name: Test Results (Kubernetes Compatibility)
           fail_on_test_failures: true
           fail_if_no_tests: false
