@@ -33,14 +33,14 @@
 
     <distributionManagement>
         <repository>
-            <id>baaas-repository-engineering</id>
-            <name>BAaaS Nexus Repository</name>
-            <url>https://repository-basic.engineering.redhat.com/nexus/repository/kie-baaas-releases/</url>
+            <id>jboss-releases-repository</id>
+            <name>JBoss Releases Repository</name>
+            <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
         </repository>
         <snapshotRepository>
-            <id>baaas-repository-engineering</id>
-            <name>BAaaS Nexus Repository</name>
-            <url>https://repository-basic.engineering.redhat.com/nexus/repository/kie-baaas-snapshots/</url>
+            <id>jboss-snapshots-repository</id>
+            <name>JBoss Snapshot Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

@@ -1,0 +1,54 @@
+name: Decision Fleet Shard
+on:
+  push:
+    branches:
+      - main
+jobs:
+  decision-fleetshard-build:
+    env:
+      MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+      MAVEN_CLI_OPTS: -s ${{ github.workspace }}/.ci/settings.xml --batch-mode
+      OUTPUT_CONTAINER_NAME: quay.io/kiegroup/baaas-decision-fleet-shard:${{ github.sha }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    name: Publish JARs and Containers
+    steps:
+      - name: Set up GraalVM
+      uses: DeLaGuardo/setup-graalvm@4.0
+      with:
+        graalvm: '20.3.2'
+        java: 'java11'
+      - name: Install native-image Binary
+        shell: bash
+        run: gu install native-image
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache Maven Packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      - name: Deploy JARs
+        shell: bash
+        run: mvn -s .m2/settings.xml package deploy -Dmaven.test.skip=true -Dcheckstyle.skip
+      - name: Login to Container Registry
+        shell: bash
+        env:
+          CONTAINER_REGISTRY_PASSWORD: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+          CONTAINER_REGISTRY_USER: ${{ secrets.CONTAINER_REGISTRY_USER }}
+        run: echo "$CONTAINER_REGISTRY_PASSWORD" | docker login quay.io --username $CONTAINER_REGISTRY_USER --password-stdin
+      - name: Build and Publish JVM Container
+        shell: bash
+        run: |
+          docker build -f decision-fleet-shard-operator/src/main/docker/Dockerfile.jvm -t $OUTPUT_CONTAINER_NAME-jvm decision-fleet-shard-operator/
+          docker push $OUTPUT_CONTAINER_NAME-jvm
+          docker image rm -f $OUTPUT_CONTAINER_NAME-jvm
+      - name: Perform Native Compile
+        shell: bash
+        run: mvn package -Pnative -Dmaven.test.skip=true
+      - name: Build and Publish Native Container
+        shell: bash
+        run: |
+          docker build -f decision-fleet-shard-operator/src/main/docker/Dockerfile.native -t $OUTPUT_CONTAINER_NAME decision-fleet-shard-operator/
+          docker push $OUTPUT_CONTAINER_NAME
+          docker image rm -f $OUTPUT_CONTAINER_NAME
