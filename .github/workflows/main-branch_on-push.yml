@@ -7,7 +7,7 @@ jobs:
   decision-fleetshard-build:
     env:
       MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-      MAVEN_CLI_OPTS: -s ${{ github.workspace }}/.ci/settings.xml --batch-mode
+      MAVEN_CLI_OPTS: -s ${{ github.workspace }}/.m2/settings.xml --batch-mode
       OUTPUT_CONTAINER_NAME: quay.io/kiegroup/baaas-decision-fleet-shard:${{ github.sha }}
     timeout-minutes: 30
     runs-on: ubuntu-latest
