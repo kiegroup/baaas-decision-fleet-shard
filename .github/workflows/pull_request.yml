@@ -1,4 +1,4 @@
-name: Decision Fleet Shard
+name: Decision Fleet Shard - CI
 on: [pull_request]
 jobs:
   decision-fleetshard-build:
