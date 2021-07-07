@@ -33,7 +33,7 @@ jobs:
         env:
           MAVEN_REPO_USER: ${{ secrets.JBOSS_NEXUS_USER }}
           MAVEN_REPO_PASSWORD: ${{ secrets.JBOSS_NEXUS_PASSWORD }}
-        run: mvn -s .m2/settings.xml package deploy -Dmaven.test.skip=true -Dcheckstyle.skip
+        run: mvn package deploy -Dmaven.test.skip=true -Dcheckstyle.skip
       - name: Login to Container Registry
         shell: bash
         env:
