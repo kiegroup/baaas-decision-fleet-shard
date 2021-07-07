@@ -14,10 +14,10 @@ jobs:
     name: Publish JARs and Containers
     steps:
       - name: Set up GraalVM
-      uses: DeLaGuardo/setup-graalvm@4.0
-      with:
-        graalvm: '20.3.2'
-        java: 'java11'
+        uses: DeLaGuardo/setup-graalvm@4.0
+        with:
+          graalvm: '20.3.2'
+          java: 'java11'
       - name: Install native-image Binary
         shell: bash
         run: gu install native-image
