@@ -2,7 +2,7 @@ name: Decision Fleet Shard
 on:
   push:
     branches:
-      - main
+      - cd-testing
 jobs:
   decision-fleetshard-build:
     env:
@@ -30,6 +30,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
       - name: Deploy JARs
         shell: bash
+        env:
+          MAVEN_REPO_USER: ${{ secrets.JBOSS_NEXUS_USER }}
+          MAVEN_REPO_PASSWORD: ${{ secrets.JBOSS_NEXUS_PASSWORD }}
         run: mvn -s .m2/settings.xml package deploy -Dmaven.test.skip=true -Dcheckstyle.skip
       - name: Login to Container Registry
         shell: bash

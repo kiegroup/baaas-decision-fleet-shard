@@ -155,8 +155,14 @@
     </modules>
     <repositories>
         <repository>
-            <id>BAaaS Nexus Repository</id>
-            <url>https://repository.engineering.redhat.com/repository/kie-baaas/</url>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>interval:30</updatePolicy>
